@@ -1,9 +1,9 @@
-import { Todos, Todo, Status } from './index';
+import { Todos, Todo, Status, createTodoList } from './index';
 
 
 test('Test iterating todos without errors', () => {
   let counter = 0;
-  const todos = new Todos();
+  const todos = createTodoList();
 
   for (let value of todos) {
     counter++;
@@ -13,7 +13,7 @@ test('Test iterating todos without errors', () => {
 });
 
 test('New todo is added', () => {
-  const todos = new Todos();
+  const todos = createTodoList();
   const result = Array.from(
     todos.add({ message: '123' }).add({ message: '345' })
   );
@@ -29,7 +29,7 @@ test('New todo is added', () => {
 });
 
 test('Get todo by index', () => {
-  const todos = new Todos();
+  const todos = createTodoList();
   const result = Array.from(
     todos.add({ message: '123' }).add({ message: '345' }).findByIndex(1)
   );
@@ -42,8 +42,8 @@ test('Get todo by index', () => {
   expect(result).toStrictEqual(expectedResult);
 });
 
-test('Mark feed as read', () => {
-  const todos = new Todos();
+test('Mark all todos as read', () => {
+  const todos = createTodoList();
   const result = Array.from(
     todos.add({ message: '123' }).add({ message: '345' }).markAsRead(),
   );
@@ -57,4 +57,49 @@ test('Mark feed as read', () => {
   }];
 
   expect(result).toStrictEqual(expectedResult);
+});
+
+test('Mark one todo as read', () => {
+  const todos = createTodoList().add({ message: '123' }).add({ message: '345' });
+  const oneResult = Array.from(todos.findByIndex(0).markAsRead());
+
+  expect(oneResult).toStrictEqual([{
+    message: '345',
+    status: Status.Completed,
+  }]);
+
+  expect(Array.from(todos)).toStrictEqual([{
+    message: '345',
+    status: Status.Completed,
+  }, {
+    message: '123',
+    status: Status.New,
+  }]);
+});
+
+test('Todos are isolated by root', () => {
+  const todos = createTodoList().add({ message: '123' }).add({ message: '345' });
+  const todos1 = createTodoList().add({ message: '123' }).add({ message: '345' });
+  const oneResult = Array.from(todos.findByIndex(0).markAsRead());
+
+  expect(oneResult).toStrictEqual([{
+    message: '345',
+    status: Status.Completed,
+  }]);
+
+  expect(Array.from(todos)).toStrictEqual([{
+    message: '345',
+    status: Status.Completed,
+  }, {
+    message: '123',
+    status: Status.New,
+  }]);
+
+  expect(Array.from(todos1)).toStrictEqual([{
+    message: '345',
+    status: Status.New,
+  }, {
+    message: '123',
+    status: Status.New,
+  }]);
 });

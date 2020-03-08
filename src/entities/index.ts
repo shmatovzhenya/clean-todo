@@ -12,9 +12,10 @@ class Todos {
 
   add({ message }: { message: string }): Todos {
     const nextTodo = { message, status: Status.New };
-    const list = [ nextTodo ].concat(this.todos);
 
-    return new Todos(list);
+    this.todos.unshift(nextTodo);
+
+    return new Todos(this.todos);
   }
 
   findByIndex(index: number): Todos {
@@ -22,11 +23,11 @@ class Todos {
   }
 
   markAsRead(): Todos {
-    const todos = this.todos.map(todo => {
-      return {...todo, status: Status.Completed };
-    });
+    for (let todo of this.todos) {
+      todo.status = Status.Completed;
+    }
 
-    return new Todos(todos);
+    return new Todos(this.todos);
   }
 
   [Symbol.iterator]() {
@@ -43,7 +44,12 @@ class Todos {
   }
 }
 
+const createTodoList = (): Todos => {
+  return new Todos([]);
+};
+
 export {
+  createTodoList,
   Status,
   Todo,
   Todos,
