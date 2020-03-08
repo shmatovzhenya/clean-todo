@@ -14,13 +14,47 @@ test('Test iterating todos without errors', () => {
 
 test('New todo is added', () => {
   const todos = new Todos();
-  const updatedTodos = todos.add({ message: '123' });
-  const result = [];
-  const expectedResult: Array<Todo> = [{ message: '123', status: Status.New }];
+  const result = Array.from(
+    todos.add({ message: '123' }).add({ message: '345' })
+  );
 
-  for (let todo of updatedTodos) {
-    result.push(todo);
-  }
+  const expectedResult: Array<Todo> = [{
+    message: '345', status: Status.New,
+  }, {
+    message: '123', status: Status.New,
+  }];
+
+
+  expect(result).toStrictEqual(expectedResult);
+});
+
+test('Get todo by index', () => {
+  const todos = new Todos();
+  const result = Array.from(
+    todos.add({ message: '123' }).add({ message: '345' }).findByIndex(1)
+  );
+
+  const expectedResult: Array<Todo> = [{
+    message: '123',
+    status: Status.New,
+  }];
+
+  expect(result).toStrictEqual(expectedResult);
+});
+
+test('Mark feed as read', () => {
+  const todos = new Todos();
+  const result = Array.from(
+    todos.add({ message: '123' }).add({ message: '345' }).markAsRead(),
+  );
+
+  const expectedResult: Array<Todo> = [{
+    message: '345',
+    status: Status.Completed,
+  }, {
+    message: '123',
+    status: Status.Completed,
+  }];
 
   expect(result).toStrictEqual(expectedResult);
 });

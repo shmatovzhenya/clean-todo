@@ -17,6 +17,18 @@ class Todos {
     return new Todos(list);
   }
 
+  findByIndex(index: number): Todos {
+    return new Todos([ this.todos[index] ]);
+  }
+
+  markAsRead(): Todos {
+    const todos = this.todos.map(todo => {
+      return {...todo, status: Status.Completed };
+    });
+
+    return new Todos(todos);
+  }
+
   [Symbol.iterator]() {
     return {
       index: 0,
