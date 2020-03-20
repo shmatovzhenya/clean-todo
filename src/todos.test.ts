@@ -1,4 +1,4 @@
-import { TodoFactory } from './todos';
+import { TodoFactory, Status } from './todos';
 
 describe('Check todo models', () => {
   test('Todo list is creating', () => {
@@ -15,5 +15,20 @@ describe('Check todo models', () => {
     expect(todoList1.length).toBe(todoList.length);
   });
 
-  test('If todo list was add, order will garanted.', () => {});
+  test('Todo list is iterable object', () => {
+    const todoList = new TodoFactory()
+      .create()
+      .add({ message: '1234' })
+      .add({ message: '5678' });
+
+    const expectedResult = [{
+      message: '5678',
+      status: Status.New,
+    }, {
+      message: '1234',
+      status: Status.New,
+    }];
+
+    expect(Array.from(todoList)).toStrictEqual(expectedResult);
+  });
 });
