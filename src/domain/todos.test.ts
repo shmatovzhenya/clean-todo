@@ -1,4 +1,4 @@
-import { TodoFactory, Status } from './todos';
+import { TodoFactory, Status } from './index';
 
 describe('Check todo models', () => {
   test('Todo list is creating', () => {

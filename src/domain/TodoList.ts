@@ -1,33 +1,5 @@
-enum Status {
-  New, Completed,
-}
+import { ITodoCollection, Todo, Status, ITodoList } from './types';
 
-interface Todo {
-  message: string;
-  status: Status;
-}
-
-interface ITodoList {
-  add(todo: { message: string }): ITodoList;
-  at(index: number): ITodoList;
-  remove(): ITodoList;
-  markAsCompleted(): ITodoList;
-  markAsNew(): ITodoList;
-  findByStatus(status: Status): ITodoList;
-  readonly length: number;
-}
-
-interface ITodoFactory {
-  create(): TodoList;
-}
-
-interface ITodoCollection {
-  readonly length: number;
-  add(todo: Todo): void;
-  remove(index): void;
-  at(index: number): Todo;
-  updateStatus(index: number, status: Status): void;
-}
 
 class TodoCollection implements ITodoCollection {
   private list: Array<Todo> = [];
@@ -158,10 +130,7 @@ class TodoList implements ITodoList {
   }
 }
 
-class TodoFactory implements ITodoFactory {
-  create() {
-    return new TodoList(new TodoCollection(), { indexMap: new Set([]) });
-  }
-}
-
-export { TodoFactory, Status };
+export {
+  TodoCollection,
+  TodoList,
+};
