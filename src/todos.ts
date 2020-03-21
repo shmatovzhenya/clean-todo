@@ -12,6 +12,7 @@ interface ITodoList {
   at(index: number): ITodoList;
   remove(): ITodoList;
   markAsCompleted(): ITodoList;
+  findByStatus(status: Status): ITodoList;
   readonly length: number;
 }
 
@@ -92,6 +93,21 @@ class TodoList implements ITodoList {
     }
 
     return new TodoList(this.todoList, this.settings);
+  }
+
+  findByStatus(status: Status): TodoList {
+    const indexMap = Array.from(this.settings.indexMap)
+      .filter((storedIndex) => {
+        const element = this.todoList.at(storedIndex);
+
+        return element.status === status;
+      });
+
+    const settings = {...this.settings,
+      indexMap: new Set(indexMap),
+    };
+
+    return new TodoList(this.todoList, settings);
   }
 
   get length() {
