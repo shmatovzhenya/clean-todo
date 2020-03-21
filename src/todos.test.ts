@@ -66,4 +66,25 @@ describe('Check todo models', () => {
     expect(Array.from(todoList)).toStrictEqual(expectedResult);
     expect(todoList1.length).toBe(0);
   });
+
+  test('Mark todo as complete', () => {
+    const todoList = new TodoFactory()
+      .create()
+      .add({ message: '1234' })
+      // .add({ message: '5678' })
+      // .add({ message: 'qwerty' })
+      .add({ message: 'asdf' });
+
+    const expectedResult = [{
+      message: '1234',
+      status: Status.Completed,
+    }];
+
+    const completedTodo = todoList.at(1).markAsCompleted();
+    const collection = Array.from(todoList);
+
+    expect(Array.from(completedTodo)).toStrictEqual(expectedResult);
+    expect(collection[0].status).toStrictEqual(Status.New);
+    expect(collection[1].status).toStrictEqual(Status.Completed);
+  });
 });

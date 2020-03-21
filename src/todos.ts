@@ -11,6 +11,7 @@ interface ITodoList {
   add(todo: { message: string }): ITodoList;
   at(index: number): ITodoList;
   remove(): ITodoList;
+  markAsCompleted(): ITodoList;
   readonly length: number;
 }
 
@@ -23,6 +24,7 @@ interface ITodoCollection {
   add(todo: Todo): void;
   remove(index): void;
   at(index: number): Todo;
+  updateStatus(index: number, status: Status): void;
 }
 
 class TodoCollection implements ITodoCollection {
@@ -38,6 +40,10 @@ class TodoCollection implements ITodoCollection {
 
   remove(index: number): void {
     this.list.splice(index, 1);
+  }
+
+  updateStatus(index: number, status: Status): void {
+    this.list[index].status = status;
   }
 
   get length(): number {
@@ -80,13 +86,12 @@ class TodoList implements ITodoList {
     return new TodoList(this.todoList, this.settings);
   }
 
-  private collectionSize(): number {
-    const collectionSize = Math.min(
-      this.settings.indexMap.size,
-      this.todoList.length,
-    );
+  markAsCompleted(): TodoList {
+    for (let index of this.settings.indexMap) {
+      this.todoList.updateStatus(index, Status.Completed);
+    }
 
-    return collectionSize;
+    return new TodoList(this.todoList, this.settings);
   }
 
   get length() {
@@ -116,6 +121,15 @@ class TodoList implements ITodoList {
         };
       },
     };
+  }
+
+  private collectionSize(): number {
+    const collectionSize = Math.min(
+      this.settings.indexMap.size,
+      this.todoList.length,
+    );
+
+    return collectionSize;
   }
 }
 
