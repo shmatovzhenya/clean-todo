@@ -9,6 +9,7 @@ interface Todo {
 
 interface ITodoList {
   add(todo: { message: string }): ITodoList;
+  at(index: number): ITodoList;
   readonly length: number;
 }
 
@@ -55,6 +56,15 @@ class TodoList implements ITodoList {
     return new TodoList(this.todoList, this.settings);
   }
 
+  at(index: number): TodoList {
+    const countOfTodo = this.settings.indexMap.size;
+    const settings: TodoSettings = {...this.settings,
+      indexMap: new Set([ countOfTodo - 1 - index ]),
+    };
+
+    return new TodoList(this.todoList, settings);
+  }
+
   get length() {
     return this.todoList.length;
   }
@@ -68,9 +78,7 @@ class TodoList implements ITodoList {
       settings: {...this.settings, indexMap },
       next() {
         const countOfTodo = this.settings.indexMap.length;
-        const currentPosition = this.settings.indexMap[this.index];
-
-        this.index++;
+        const currentPosition = this.settings.indexMap[this.index++];
 
         return {
           done: this.index > countOfTodo,

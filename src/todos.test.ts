@@ -31,4 +31,18 @@ describe('Check todo models', () => {
 
     expect(Array.from(todoList)).toStrictEqual(expectedResult);
   });
+
+  test('Get todo element by index', () => {
+    const todoList = new TodoFactory()
+      .create()
+      .add({ message: '1234' })
+      .add({ message: '5678' });
+
+    const expectedResult = [{
+      message: '1234',
+      status: Status.New,
+    }];
+
+    expect(Array.from(todoList.at(1))).toStrictEqual(expectedResult);
+  });
 });
