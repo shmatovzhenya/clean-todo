@@ -10,6 +10,7 @@ interface Todo {
 interface ITodoList {
   add(todo: { message: string }): ITodoList;
   at(index: number): ITodoList;
+  remove(): ITodoList;
   readonly length: number;
 }
 
@@ -20,6 +21,7 @@ interface ITodoFactory {
 interface ITodoCollection {
   readonly length: number;
   add(todo: Todo): void;
+  remove(index): void;
   at(index: number): Todo;
 }
 
@@ -32,6 +34,10 @@ class TodoCollection implements ITodoCollection {
 
   at(index: number): Todo {
     return this.list[index];
+  }
+
+  remove(index: number): void {
+    this.list.splice(index, 1);
   }
 
   get length(): number {
@@ -65,12 +71,35 @@ class TodoList implements ITodoList {
     return new TodoList(this.todoList, settings);
   }
 
+  remove(): TodoList {
+    for (let index of this.settings.indexMap) {
+      this.todoList.remove(index);
+      this.settings.indexMap.delete(index);
+    }
+
+    return new TodoList(this.todoList, this.settings);
+  }
+
+  private collectionSize(): number {
+    const collectionSize = Math.min(
+      this.settings.indexMap.size,
+      this.todoList.length,
+    );
+
+    return collectionSize;
+  }
+
   get length() {
-    return this.todoList.length;
+    return this.collectionSize();
   }
 
   [Symbol.iterator]() {
-    const indexMap = Array.from(this.settings.indexMap).reverse();
+    const todoListSize = this.todoList.length;
+
+    const indexMap = Array.from(this.settings.indexMap)
+      .reverse()
+      .filter(storedIndex => storedIndex < todoListSize)
+      .slice(0, this.collectionSize());
 
     return {
       index: 0,
@@ -79,9 +108,10 @@ class TodoList implements ITodoList {
       next() {
         const countOfTodo = this.settings.indexMap.length;
         const currentPosition = this.settings.indexMap[this.index++];
+        const isOutOfRange = this.index > countOfTodo;
 
         return {
-          done: this.index > countOfTodo,
+          done: isOutOfRange,
           value: this.todoList.at(currentPosition),
         };
       },
