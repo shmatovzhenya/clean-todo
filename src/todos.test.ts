@@ -71,8 +71,6 @@ describe('Check todo models', () => {
     const todoList = new TodoFactory()
       .create()
       .add({ message: '1234' })
-      // .add({ message: '5678' })
-      // .add({ message: 'qwerty' })
       .add({ message: 'asdf' });
 
     const expectedResult = [{
@@ -117,5 +115,37 @@ describe('Check todo models', () => {
 
     expect(Array.from(todoList.findByStatus(Status.New))).toStrictEqual(expectedResult);
     expect(Array.from(todoList.findByStatus(Status.Completed))).toStrictEqual(expectedResult1);
+  });
+
+  test('Mark todo as new', () => {
+    const todoList = new TodoFactory()
+      .create()
+      .add({ message: '1234' })
+      .add({ message: '5678' })
+      .add({ message: 'qwerty' })
+      .add({ message: 'asdf' })
+      .markAsCompleted();
+
+    todoList.at(1).markAsNew();
+    todoList.at(2).markAsNew();
+
+    const expectedResult = [{
+      message: 'asdf',
+      status: Status.Completed,
+    }, {
+      message: '1234',
+      status: Status.Completed,
+    }];
+
+    const expectedResult1 = [{
+      message: 'qwerty',
+      status: Status.New,
+    }, {
+      message: '5678',
+      status: Status.New,
+    }];
+
+    expect(Array.from(todoList.findByStatus(Status.Completed))).toStrictEqual(expectedResult);
+    expect(Array.from(todoList.findByStatus(Status.New))).toStrictEqual(expectedResult1);
   });
 });
