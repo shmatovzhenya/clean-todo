@@ -43,6 +43,7 @@
   type="checkbox"
   bind:checked={checked}
   on:change={event => {
+    console.log('toggle');
     dispatch('toggle');
   }}
 >

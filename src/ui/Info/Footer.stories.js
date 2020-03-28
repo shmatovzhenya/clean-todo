@@ -6,7 +6,7 @@ import Footer from './Footer.svelte';
 
 storiesOf('Info', module)
   .addDecorator(withKnobs)
-  .add('Close', () => {
+  .add('Footer', () => {
     return {
       Component: Footer,
     };

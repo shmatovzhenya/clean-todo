@@ -19,13 +19,13 @@
   }
 </style>
 <footer>
-  <div class="left">
+  <aside class="left">
     <slot name="left">0 items left</slot>
-  </div>
-  <div class="center">
+  </aside>
+  <aside class="center">
     <slot name="center">Center</slot>
-  </div>
-  <div class="right">
+  </aside>
+  <aside class="right">
     <slot name="right"></slot>
-  </div>
+  </aside>
 </footer>
