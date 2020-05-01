@@ -11,7 +11,8 @@
     border-radius: 3px;
     padding: 3px 7px;
     text-decoration: none;
-    color: rgb(119, 119, 119);
+    font-weight: 300;
+    color: #777;
   }
   a:hover,
   a:active {
