@@ -7,6 +7,20 @@ describe('Check todo models', () => {
     expect(todoList.length).toBe(0);
   });
 
+  test('Todo list is created from list of objects', () => {
+    const expectedResult = [{
+      message: '5678',
+      status: Status.New,
+    }, {
+      message: '1234',
+      status: Status.New,
+    }];
+
+    const todoList = new TodoFactory().hydrate(expectedResult);
+
+    expect(Array.from(todoList)).toStrictEqual(expectedResult);
+  });
+
   test('If todo list was add, it will global in context factory method', () => {
     const todoList = new TodoFactory().create();
     const todoList1 = todoList.add({ message: '1234' }).add({ message: '5678' });

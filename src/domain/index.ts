@@ -1,1 +1,1 @@
-export { TodoFactory, Status } from './todos';
+export { TodoFactory, Status, Todo } from './todos';
