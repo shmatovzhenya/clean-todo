@@ -4,7 +4,7 @@ import { TodoList, TodoCollection } from './TodoList';
 
 class TodoFactory implements ITodoFactory {
   create() {
-    return new TodoList(new TodoCollection(), { indexMap: new Set([]) });
+    return new TodoList(new TodoCollection(), { indexMap: new Set([]), lastId: '0' });
   }
   hydrate(todos: Array<Todo>) {
     const todoCollection = new TodoCollection();
@@ -16,7 +16,7 @@ class TodoFactory implements ITodoFactory {
       indexMap.add(todosCount - index);
     });
 
-    return new TodoList(todoCollection, { indexMap });
+    return new TodoList(todoCollection, { indexMap, lastId: (todos.length - 1).toString() });
   }
 }
 

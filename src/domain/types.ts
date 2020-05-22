@@ -3,6 +3,7 @@ enum Status {
 }
 
 interface Todo {
+  id: string;
   message: string;
   status: Status;
 }

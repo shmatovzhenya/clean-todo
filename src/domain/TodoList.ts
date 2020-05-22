@@ -26,6 +26,7 @@ class TodoCollection implements ITodoCollection {
 }
 
 interface TodoSettings {
+  lastId: string;
   indexMap: Set<number>;
 }
 
@@ -33,8 +34,13 @@ class TodoList implements ITodoList {
   constructor(private todoList: ITodoCollection, private settings: TodoSettings) {}
 
   add(todo: { message: string }): TodoList {
+    let id = parseInt(this.settings.lastId) + 1;
+
+    this.settings.lastId = id.toString();
     this.settings.indexMap.add(this.settings.indexMap.size);
+
     this.todoList.add({
+      id: this.settings.lastId,
       message: todo.message,
       status: Status.New,
     });

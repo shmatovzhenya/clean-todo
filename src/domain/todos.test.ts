@@ -1,4 +1,4 @@
-import { TodoFactory, Status } from './index';
+import { TodoFactory, Status, Todo } from './index';
 
 describe('Check todo models', () => {
   test('Todo list is creating', () => {
@@ -8,10 +8,12 @@ describe('Check todo models', () => {
   });
 
   test('Todo list is created from list of objects', () => {
-    const expectedResult = [{
+    const expectedResult: Todo[] = [{
+      id: '1',
       message: '5678',
       status: Status.New,
     }, {
+      id: '2',
       message: '1234',
       status: Status.New,
     }];
@@ -35,10 +37,12 @@ describe('Check todo models', () => {
       .add({ message: '1234' })
       .add({ message: '5678' });
 
-    const expectedResult = [{
+    const expectedResult: Todo[] = [{
+      id: '2',
       message: '5678',
       status: Status.New,
     }, {
+      id: '1',
       message: '1234',
       status: Status.New,
     }];
@@ -52,7 +56,8 @@ describe('Check todo models', () => {
       .add({ message: '1234' })
       .add({ message: '5678' });
 
-    const expectedResult = [{
+    const expectedResult: Todo[] = [{
+      id: '1',
       message: '1234',
       status: Status.New,
     }];
@@ -67,10 +72,12 @@ describe('Check todo models', () => {
       .add({ message: '5678' })
       .add({ message: 'qwerty' });
 
-    const expectedResult = [{
+    const expectedResult: Todo[] = [{
+      id: '3',
       message: 'qwerty',
       status: Status.New,
     }, {
+      id: '1',
       message: '1234',
       status: Status.New,
     }];
@@ -87,7 +94,8 @@ describe('Check todo models', () => {
       .add({ message: '1234' })
       .add({ message: 'asdf' });
 
-    const expectedResult = [{
+    const expectedResult: Todo[] = [{
+      id: '1',
       message: '1234',
       status: Status.Completed,
     }];
@@ -111,18 +119,22 @@ describe('Check todo models', () => {
     todoList.at(1).markAsCompleted();
     todoList.at(2).markAsCompleted();
 
-    const expectedResult = [{
+    const expectedResult: Todo[] = [{
+      id: '4',
       message: 'asdf',
       status: Status.New,
     }, {
+      id: '1',
       message: '1234',
       status: Status.New,
     }];
 
-    const expectedResult1 = [{
+    const expectedResult1: Todo[] = [{
+      id: '3',
       message: 'qwerty',
       status: Status.Completed,
     }, {
+      id: '2',
       message: '5678',
       status: Status.Completed,
     }];
@@ -143,18 +155,22 @@ describe('Check todo models', () => {
     todoList.at(1).markAsNew();
     todoList.at(2).markAsNew();
 
-    const expectedResult = [{
+    const expectedResult: Todo[] = [{
+      id: '4',
       message: 'asdf',
       status: Status.Completed,
     }, {
+      id: '1',
       message: '1234',
       status: Status.Completed,
     }];
 
-    const expectedResult1 = [{
+    const expectedResult1: Todo[] = [{
+      id: '3',
       message: 'qwerty',
       status: Status.New,
     }, {
+      id: '2',
       message: '5678',
       status: Status.New,
     }];
