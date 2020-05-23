@@ -16,6 +16,7 @@ interface ITodoList {
   markAsNew(): ITodoList;
   findByStatus(status: Status): ITodoList;
   readonly length: number;
+  [Symbol.iterator](): Iterator<Todo>;
 }
 
 interface ITodoFactory {
