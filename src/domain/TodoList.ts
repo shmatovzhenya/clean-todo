@@ -54,6 +54,10 @@ class TodoList implements ITodoList {
       indexMap: new Set([ countOfTodo - 1 - index ]),
     };
 
+    if (index >= countOfTodo) {
+      settings.indexMap = new Set([]);
+    }
+
     return new TodoList(this.todoList, settings);
   }
 

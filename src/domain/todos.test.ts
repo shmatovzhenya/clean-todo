@@ -65,6 +65,17 @@ describe('Check todo models', () => {
     expect(Array.from(todoList.at(1))).toStrictEqual(expectedResult);
   });
 
+  test('Try to get todo by out of range index', () => {
+    const todoList = new TodoFactory()
+      .create()
+      .add({ message: '1234' })
+      .add({ message: '5678' });
+
+    const expectedResult: Todo[] = [];
+
+    expect(Array.from(todoList.at(15))).toStrictEqual(expectedResult);
+  });
+
   test('Remove todo', () => {
     const todoList = new TodoFactory()
       .create()

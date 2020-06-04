@@ -5,7 +5,7 @@ import { Repository, Errors } from './types';
 class CreateTodo {
   constructor(private storage: Repository<Todo, void>, private todoList: ITodoList) {}
 
-  async execute(message: string): Promise<void | Errors.EmptyMessage> {
+  async execute(message: string): Promise<Todo[] | Errors.EmptyMessage> {
     if (message.length === 0) {
       return Promise.reject(Errors.EmptyMessage);
     }
@@ -14,6 +14,8 @@ class CreateTodo {
     const todo: Todo = Array.from(todoList)[0];
 
     await this.storage.execute(todo);
+
+    return Array.from(this.todoList);
   }
 }
 

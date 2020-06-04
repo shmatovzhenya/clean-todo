@@ -8,7 +8,7 @@ class FakeGetTodoRepository implements Repository<void, Todo[]> {
 }
 
 class FakePutTodoRepository implements Repository<Todo, void> {
-  async execute(_: Todo): Promise<void> {}
+  async execute(_: Todo | Todo[]): Promise<void> {}
 }
 
 export {

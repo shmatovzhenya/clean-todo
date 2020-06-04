@@ -15,15 +15,16 @@ describe('Testing CreateTodo Use Case', () => {
 
     const mockedRepository = new mocks.FakePutTodoRepository();
     const createTodo = new CreateTodo(mockedRepository, new TodoFactory().create());
-
-    await createTodo.execute('1234');
-
-    expect(callback).toHaveBeenCalledTimes(1);
-    expect(callback).toHaveBeenCalledWith({
+    const result = await createTodo.execute('1234');
+    const receivedTodo = {
       id: '1',
       message: '1234',
       status: Status.New,
-    });    
+    };
+
+    expect(callback).toHaveBeenCalledTimes(1);
+    expect(callback).toHaveBeenCalledWith(receivedTodo);
+    expect(result).toStrictEqual([receivedTodo]);
   });
 
   test('Testing attempt for creating invalid todo', async () => {
@@ -34,7 +35,6 @@ describe('Testing CreateTodo Use Case', () => {
 
     const mockedRepository = new mocks.FakePutTodoRepository();
     const createTodo = new CreateTodo(mockedRepository, new TodoFactory().create());
-    let result: Errors;
 
     try {
       await createTodo.execute('');

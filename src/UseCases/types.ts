@@ -4,6 +4,7 @@ interface Repository<Context, Result> {
 
 enum Errors {
   EmptyMessage,
+  NotFound,
 }
 
 export {
