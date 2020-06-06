@@ -1,14 +1,14 @@
 import { TodoFactory, Status, Todo } from '../domain';
 import * as mocks from './mocks';
 import { TODO_LIST } from './fixtures';
-import { MarkTodosAsCompleted } from './MarkTodosAsCompleted';
+import { MarkTodosAsNew } from './MarkTodosAsNew';
 import { Errors } from './types';
 
 
 jest.mock('./mocks');
 
-describe('Tests for MarkTodoAsCompleted', () => {
-  test('Without params, all todos mark as completed', async () => {
+describe('Tests for MarkTodoAsNew', () => {
+  test('Without params, all todos mark as new', async () => {
     const fakeRepositories = mocks as jest.Mocked<typeof mocks>;
     const callback = jest.fn();
 
@@ -19,21 +19,21 @@ describe('Tests for MarkTodoAsCompleted', () => {
     const receivedValue: Todo[] = TODO_LIST.map(todo => ({
       id: todo.id,
       message: todo.message,
-      status: Status.Completed,
+      status: Status.New,
     }));
 
-    const markTodosAsCompleted = new MarkTodosAsCompleted(
+    const markTodosAsNew = new MarkTodosAsNew(
       mockedRepository, new TodoFactory().hydrate(JSON.parse(JSON.stringify(TODO_LIST))),
     );
 
-    const result = await markTodosAsCompleted.execute();
+    const result = await markTodosAsNew.execute();
 
     expect(callback).toHaveBeenCalledTimes(1);
     expect(callback).toHaveBeenCalledWith(receivedValue);
     expect(result).toStrictEqual(receivedValue);
   });
 
-  test('If status param is defined then mark all todos in this status as completed', async () => {
+  test('If status param is defined then mark all todos in this status as new', async () => {
     const fakeRepositories = mocks as jest.Mocked<typeof mocks>;
     const callback = jest.fn();
 
@@ -44,21 +44,29 @@ describe('Tests for MarkTodoAsCompleted', () => {
     const receivedValue: Todo[] = TODO_LIST.map(todo => ({
       id: todo.id,
       message: todo.message,
-      status: Status.Completed,
+      status: Status.New,
     }));
 
-    const markTodosAsCompleted = new MarkTodosAsCompleted(
+    const calledValue: Todo[] = TODO_LIST.filter(todo => todo.status === Status.Completed).map(todo => ({
+      id: todo.id,
+      message: todo.message,
+      status: Status.New,
+    }));
+    console.log('START');
+
+    const markTodosAsNew = new MarkTodosAsNew(
       mockedRepository, new TodoFactory().hydrate(JSON.parse(JSON.stringify(TODO_LIST))),
     );
 
-    const result = await markTodosAsCompleted.execute({ status: Status.New });
+    const result = await markTodosAsNew.execute({ status: Status.Completed });
 
+    console.log('END');
     expect(callback).toHaveBeenCalledTimes(1);
-    expect(callback).toHaveBeenCalledWith(receivedValue);
+    expect(callback).toHaveBeenCalledWith(calledValue);
     expect(result).toStrictEqual(receivedValue);
   });
 
-  test('If status param is completed then result not changed', async () => {
+  test('If status param is new then result not changed', async () => {
     const fakeRepositories = mocks as jest.Mocked<typeof mocks>;
     const callback = jest.fn();
 
@@ -66,12 +74,12 @@ describe('Tests for MarkTodoAsCompleted', () => {
 
     const mockedRepository = new mocks.FakePutTodoRepository();
 
-    const markTodosAsCompleted = new MarkTodosAsCompleted(
+    const markTodosAsNew = new MarkTodosAsNew(
       mockedRepository, new TodoFactory().hydrate(JSON.parse(JSON.stringify(TODO_LIST))),
     );
 
-    const receivedValue = TODO_LIST.filter(todo => todo.status === Status.Completed);
-    const result = await markTodosAsCompleted.execute({ status: Status.Completed });
+    const receivedValue = TODO_LIST.filter(todo => todo.status === Status.New);
+    const result = await markTodosAsNew.execute({ status: Status.New });
 
     expect(callback).toHaveBeenCalledTimes(1);
     expect(callback).toHaveBeenCalledWith(receivedValue);
@@ -86,16 +94,16 @@ describe('Tests for MarkTodoAsCompleted', () => {
 
     const mockedRepository = new mocks.FakePutTodoRepository();
 
-    const markTodosAsCompleted = new MarkTodosAsCompleted(
+    const markTodosAsNew = new MarkTodosAsNew(
       mockedRepository, new TodoFactory().hydrate(JSON.parse(JSON.stringify(TODO_LIST))),
     );
 
     const receivedValue = TODO_LIST[3];
-    const result = await markTodosAsCompleted.execute({ index: 3 });
+    const result = await markTodosAsNew.execute({ index: 3 });
     const receivedResult = JSON.parse(JSON.stringify(TODO_LIST));
 
-    receivedResult[3].status = Status.Completed;
-    receivedValue.status = Status.Completed;
+    receivedResult[3].status = Status.New;
+    receivedValue.status = Status.New;
 
     expect(callback).toHaveBeenCalledTimes(1);
     expect(callback).toHaveBeenCalledWith([receivedValue]);
@@ -110,12 +118,12 @@ describe('Tests for MarkTodoAsCompleted', () => {
 
     const mockedRepository = new mocks.FakePutTodoRepository();
 
-    const markTodosAsCompleted = new MarkTodosAsCompleted(
+    const markTodosAsNew = new MarkTodosAsNew(
       mockedRepository, new TodoFactory().hydrate(JSON.parse(JSON.stringify(TODO_LIST))),
     );
 
     try {
-      await markTodosAsCompleted.execute({ index: 10 });
+      await markTodosAsNew.execute({ index: 10 });
     } catch (e) {
       expect(e).toBe(Errors.NotFound);
     }
