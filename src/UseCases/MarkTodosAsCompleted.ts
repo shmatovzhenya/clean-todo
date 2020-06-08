@@ -26,7 +26,7 @@ class MarkTodosAsCompleted {
     }
 
     result.markAsCompleted();
-    this.repository.execute(Array.from(result));
+    await this.repository.execute(Array.from(result));
 
     return Array.from(this.todoList);
   }

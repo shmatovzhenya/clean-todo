@@ -52,7 +52,6 @@ describe('Tests for MarkTodoAsNew', () => {
       message: todo.message,
       status: Status.New,
     }));
-    console.log('START');
 
     const markTodosAsNew = new MarkTodosAsNew(
       mockedRepository, new TodoFactory().hydrate(JSON.parse(JSON.stringify(TODO_LIST))),
@@ -60,7 +59,6 @@ describe('Tests for MarkTodoAsNew', () => {
 
     const result = await markTodosAsNew.execute({ status: Status.Completed });
 
-    console.log('END');
     expect(callback).toHaveBeenCalledTimes(1);
     expect(callback).toHaveBeenCalledWith(calledValue);
     expect(result).toStrictEqual(receivedValue);

@@ -15,7 +15,6 @@ class MarkTodosAsNew {
 
     if ('status' in options) {
       result = result.findByStatus(options.status);
-      console.log(Array.from(result), options.status);
     }
 
     if (options.index) {
@@ -24,12 +23,10 @@ class MarkTodosAsNew {
       }
 
       result = result.at(this.todoList.length - options.index - 1);
-      console.log(2);
     }
 
-    console.log(Array.from(result), options.status);
     result.markAsNew();
-    this.repository.execute(Array.from(result));
+    await this.repository.execute(Array.from(result));
 
     return Array.from(this.todoList);
   }
