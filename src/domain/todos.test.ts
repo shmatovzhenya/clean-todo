@@ -23,6 +23,68 @@ describe('Check todo models', () => {
     expect(Array.from(todoList)).toStrictEqual(expectedResult);
   });
 
+  test('Testing getting element by id on existing element', () => {
+    const todoList = new TodoFactory()
+      .create()
+      .add({ message: '1234' })
+      .add({ message: '5678' });
+
+    const [ todo ] = Array.from(todoList.getById('2'));
+
+    expect(todo).toStrictEqual({
+      id: '2',
+      message: '5678',
+      status: Status.New,
+    });
+  });
+
+  test('Testing getting element by id on unexisting element', () => {
+    const todoList = new TodoFactory()
+      .create()
+      .add({ message: '1234' })
+      .add({ message: '5678' });
+
+    const [ todo ] = Array.from(todoList.getById('14'));
+
+    expect(todo).toBe(undefined);
+  });
+  
+  test('Testing addition existing element to selected elements', () => {
+    const todoList = new TodoFactory()
+      .create()
+      .add({ message: '1234' })
+      .add({ message: '5678' })
+      .add({ message: 'qwerty' });
+
+    const result = Array.from(todoList.getById('3').addToSequence('1'));
+
+    expect(result).toStrictEqual([{
+      id: '1',
+      message: '1234',
+      status: Status.New,
+    }, {
+      id: '3',
+      message: 'qwerty',
+      status: Status.New,
+    }]);
+  });
+  
+  test('Testing addition unexisting element to selected elements', () => {
+    const todoList = new TodoFactory()
+      .create()
+      .add({ message: '1234' })
+      .add({ message: '5678' })
+      .add({ message: 'qwerty' });
+
+    const result = Array.from(todoList.getById('15').addToSequence('1'));
+
+    expect(result).toStrictEqual([{
+      id: '1',
+      message: '1234',
+      status: Status.New,
+    }]);
+  });
+
   test('If todo list was add, it will global in context factory method', () => {
     const todoList = new TodoFactory().create();
     const todoList1 = todoList.add({ message: '1234' }).add({ message: '5678' });

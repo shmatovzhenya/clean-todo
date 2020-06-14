@@ -12,6 +12,13 @@ class TodoCollection implements ITodoCollection {
     return this.list[index];
   }
 
+  getById(id: string): { index: number; data?: Todo } {
+    const index = this.list.findIndex(todo => todo.id === id);
+    const data = index !== -1 ? this.list[index] : undefined;
+
+    return { index, data };
+  }
+
   remove(index: number): void {
     this.list.splice(index, 1);
   }
@@ -76,6 +83,32 @@ class TodoList implements ITodoList {
     }
 
     return new TodoList(this.todoList, this.settings);
+  }
+
+  getById(id: string): TodoList {
+    const indexMap = new Set<number>([]);
+    const { index } = this.todoList.getById(id);
+
+    if (index !== -1) {
+      indexMap.add(index);
+    }
+
+    const settings: TodoSettings = {...this.settings, indexMap };
+
+    return new TodoList(this.todoList, settings);
+  }
+
+  addToSequence(id: string): TodoList {
+    const { indexMap } = this.settings;
+    const { index } = this.todoList.getById(id);
+
+    if (index !== -1) {
+      indexMap.add(index);
+    }
+
+    const settings: TodoSettings = {...this.settings, indexMap};
+
+    return new TodoList(this.todoList, settings);
   }
 
   markAsNew(): TodoList {
