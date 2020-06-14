@@ -1,11 +1,18 @@
-import { TodoFactory, Status } from '../domain';
+import { TodoFactory, Status, Todo } from '../domain';
 import { TodoInterceptor } from './index';
 
 
 describe('Testing Todo UseCase', () => {
   test('Testing minimalistic call', async () => {
     const todoList = new TodoFactory().create();
-    const todos = new TodoInterceptor(todoList);
+    const callback = jest.fn();
+
+    const todos = new TodoInterceptor(todoList, [], {
+      createTodoRepository: {
+        execute: callback,
+      },
+    });
+
     const result = await todos.values();
 
     expect(result).toStrictEqual([]);
@@ -13,20 +20,35 @@ describe('Testing Todo UseCase', () => {
 
   test('Testing creating list', async () => {
     const todoList = new TodoFactory().create();
-    const todos = new TodoInterceptor(todoList);
-    
-    await todos.create({ message: 'qwerty' }).values();
+    const callback = jest.fn();
 
-    expect(Array.from(todoList)).toStrictEqual([{
+    const todos = new TodoInterceptor(todoList, [], {
+      createTodoRepository: {
+        execute: callback,
+      },
+    });
+
+    const expectedMessage = {
       id: '1',
       message: 'qwerty',
       status: Status.New,
-    }]);
+    };
+    
+    await todos.create({ message: 'qwerty' }).values();
+
+    expect(Array.from(todoList)).toStrictEqual([ expectedMessage ]);
+    expect(callback).toBeCalledWith(expectedMessage);
   });
 
   test('Testing creating some items', async () => {
     const todoList = new TodoFactory().create();
-    const todos = new TodoInterceptor(todoList);
+    const callback = jest.fn();
+
+    const todos = new TodoInterceptor(todoList, [], {
+      createTodoRepository: {
+        execute: callback,
+      },
+    });
     
     await todos
       .create({ message: 'qwerty' })
@@ -47,11 +69,18 @@ describe('Testing Todo UseCase', () => {
       message: '67890',
       status: Status.New,
     }]);
+    expect(callback).toBeCalledTimes(3);
   });
 
   test('Testing interrupt after invalid data', async () => {
     const todoList = new TodoFactory().create();
-    const todos = new TodoInterceptor(todoList);
+    const callback = jest.fn();
+
+    const todos = new TodoInterceptor(todoList, [], {
+      createTodoRepository: {
+        execute: callback,
+      },
+    });
     
     try {
       await todos
@@ -61,6 +90,8 @@ describe('Testing Todo UseCase', () => {
         .values();
     } catch (e) {
       expect(e).toBe('EmptyMessage');
+    } finally {
+      expect(callback).toBeCalledTimes(1);
     }
   });
 });
