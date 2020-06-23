@@ -94,6 +94,7 @@ class TodoList implements ITodoList {
     }
 
     const settings: TodoSettings = {...this.settings, indexMap };
+    console.log({ settings });
 
     return new TodoList(this.todoList, settings);
   }
@@ -108,6 +109,7 @@ class TodoList implements ITodoList {
 
     const settings: TodoSettings = {...this.settings, indexMap};
 
+    console.log({ index, settings });
     return new TodoList(this.todoList, settings);
   }
 

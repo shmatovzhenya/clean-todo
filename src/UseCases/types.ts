@@ -1,7 +1,7 @@
 import { ITodoList, Todo } from '../domain';
 
 
-type BusinessErrors = 'NotExists' | 'EmptyMessage';
+type BusinessErrors = 'NotExists' | 'EmptyMessage' | 'OutOfRange';
 type StorageErrors = 'ServerNotResponded' | 'NotFound' | 'Forbidden';
 
 interface Repository<Context, Result> {

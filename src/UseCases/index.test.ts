@@ -58,7 +58,7 @@ describe('Testing Todo UseCase', () => {
 
     expect(Array.from(todoList)).toStrictEqual([{
       id: '3',
-      message: 'qwerty',
+      message: '67890',
       status: Status.New,
     }, {
       id: '2',
@@ -66,7 +66,7 @@ describe('Testing Todo UseCase', () => {
       status: Status.New,
     }, {
       id: '1',
-      message: '67890',
+      message: 'qwerty',
       status: Status.New,
     }]);
     expect(callback).toBeCalledTimes(3);
@@ -94,4 +94,39 @@ describe('Testing Todo UseCase', () => {
       expect(callback).toBeCalledTimes(1);
     }
   });
+
+  // test('Test selecting pair todos', async () => {
+  //   const todoList = new TodoFactory().create();
+  //   const callback = jest.fn();
+  //   console.log('START');
+
+  //   const todos = new TodoInterceptor(todoList, [], {
+  //     createTodoRepository: {
+  //       execute: callback,
+  //     },
+  //   });
+
+  //   await todos
+  //     .create({ message: 'qwerty' })
+  //     .create({ message: '12345' })
+  //     .create({ message: '67890' })
+  //     .values();
+
+  //   const result = await todos
+  //     .getById({ id: '1' })
+  //     .concat({ id: '3' })
+  //     .values();
+  //   console.log({ result });
+  //   console.log('END');
+    
+  //   expect(result).toStrictEqual([{
+  //     id: '3',
+  //     message: '67890',
+  //     status: Status.New,
+  //   }, {
+  //     id: '1',
+  //     message: 'qwerty',
+  //     status: Status.New,
+  //   }]);
+  // });
 });
