@@ -1,36 +1,27 @@
-import { ITodoList, Todo } from '../domain';
-
-
-type BusinessErrors = 'NotExists' | 'EmptyMessage' | 'OutOfRange';
-type StorageErrors = 'ServerNotResponded' | 'NotFound' | 'Forbidden';
-
-interface Repository<Context, Result> {
-  execute(context: Context): Promise<Result | StorageErrors>;
+enum StorageErrors {
+  NotFound,
+  NetworkFailed,
+  NotAccess,
+  UnknownError,
 }
 
-type Result = ITodoList | BusinessErrors | StorageErrors;
-
-interface UseCase<Context> {
-  execute(context: Context): Promise<Result>;
+enum UseCaseErrors {
+  OutOfRange,
+  NotFound,
+  EmptyValue,
 }
 
-interface Interceptor {
-  values(): Promise<Todo[] | BusinessErrors | StorageErrors>;
+interface Mapper<Context, Result> {
+  map(context: Context): Promise<Result | StorageErrors>;
 }
 
-type Context = any;
-
-type Item = {
-  context: Context;
-  executor: UseCase<Context>;
-};
+interface UseCase<Context, Result> {
+  execute(context: Context): Promise<Result | StorageErrors | UseCaseErrors>;
+}
 
 export {
-  BusinessErrors,
   StorageErrors,
-  Repository,
+  UseCaseErrors,
+  Mapper,
   UseCase,
-  Item,
-  Result,
-  Interceptor,
 };

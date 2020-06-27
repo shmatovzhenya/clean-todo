@@ -1,6 +1,6 @@
 import { TodoFactory, Status } from '../domain';
 import { TodoList } from './TodoList';
-import { UseCaseErrors } from './layerTypes';
+import { UseCaseErrors } from './types';
 
 
 describe('Testing TodoList UseCase', () => {

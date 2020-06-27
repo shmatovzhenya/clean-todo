@@ -1,5 +1,5 @@
 import { ITodoList } from '../domain';
-import { UseCase, UseCaseErrors } from './layerTypes';
+import { UseCase, UseCaseErrors } from './types';
 
 
 type Context = {

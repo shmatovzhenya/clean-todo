@@ -1,5 +1,5 @@
 import { ITodoList, Todo } from '../domain';
-import { UseCase, Mapper, StorageErrors, UseCaseErrors } from './layerTypes';
+import { UseCase, Mapper, StorageErrors, UseCaseErrors } from './types';
 
 
 type Session = {
