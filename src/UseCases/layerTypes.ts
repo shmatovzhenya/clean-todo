@@ -8,6 +8,7 @@ enum StorageErrors {
 enum UseCaseErrors {
   OutOfRange,
   NotFound,
+  EmptyValue,
 }
 
 interface Mapper<Context, Result> {

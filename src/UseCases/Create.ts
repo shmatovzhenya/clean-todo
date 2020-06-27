@@ -1,5 +1,5 @@
 import { ITodoList, Todo } from '../domain';
-import { UseCase, Mapper, StorageErrors } from './layerTypes';
+import { UseCase, Mapper, StorageErrors, UseCaseErrors } from './layerTypes';
 
 
 type Session = {
@@ -14,7 +14,11 @@ type Context = {
 class Create implements UseCase<Context, ITodoList> {
   constructor(private session: Session) {}
 
-  async execute({ todoList, message }: Context): Promise<ITodoList | StorageErrors> {
+  async execute({ todoList, message }: Context): Promise<ITodoList | StorageErrors | UseCaseErrors> {
+    if (message.length === 0) {
+      return UseCaseErrors.EmptyValue;
+    }
+
     const nextTodoList = todoList.add({ message });
     const lastTodo: Todo = Array.from(nextTodoList.at(nextTodoList.length - 1))[0];
 
