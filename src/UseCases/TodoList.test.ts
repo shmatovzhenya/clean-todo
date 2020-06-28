@@ -245,4 +245,51 @@ describe('Testing TodoList UseCase', () => {
       name: 'complete',
     });
   });
+
+  test('Mark todo as unread', async () => {
+    const todos = new TodoFactory().create();
+    const todoList = new TodoList(todos, session);
+
+    await todoList
+      .create({ message: 'qwerty' })
+      .create({ message: 'asdfgh' })
+      .create({ message: 'zxcvbn' })
+      .complete()
+      .getById({ id: '1' })
+      .concat({ id: '2' })
+      .markAsNew()
+      .values();
+    
+    expect(Array.from(todos)).toStrictEqual([
+      { id: '3', message: 'qwerty', status: 1 }, 
+      { id: '2', message: 'asdfgh', status: 0 }, 
+      { id: '1', message: 'zxcvbn', status: 0 },
+    ]);
+  });
+
+
+  test('Mark todo as read with network error', async () => {
+    const todos = new TodoFactory().create();
+    const todoList = new TodoList(todos, {
+      save: session.save,
+      update: {
+        map: async () => Promise.resolve(StorageErrors.NetworkFailed),
+      },
+    });
+
+    const result = await todoList
+      .create({ message: 'qwerty' })
+      .create({ message: 'asdfgh' })
+      .create({ message: 'zxcvbn' })
+      .getById({ id: '1' })
+      .concat({ id: '2' })
+      .markAsNew()
+      .values();
+    
+    expect(result).toStrictEqual({
+      code: StorageErrors.NetworkFailed,
+      context: {},
+      name: 'unread',
+    });
+  });
 });

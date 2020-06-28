@@ -3,7 +3,8 @@ import { UseCase, Mapper, StorageErrors, UseCaseErrors } from './types';
 import { Create, Context as CreateContext } from './Create';
 import { GetById, Context as GetByIdContext } from './GetById';
 import { Concat, Context as ConcatContext } from './Concat';
-import { MarkAsRead, Context as MarkAsReadContext } from './MarkAsRead';
+import { MarkAsRead } from './MarkAsRead';
+import { MarkAsUnRead } from './MarkAsUnRead';
 
 
 type Context = CreateContext | GetByIdContext | ConcatContext;
@@ -67,6 +68,16 @@ class TodoList {
       executor: new MarkAsRead(this.session),
       context: {},
       name: 'complete',
+    }]);
+
+    return new TodoList(this.todoList, this.session, items);
+  }
+
+  markAsNew(): TodoList {
+    const items = this.items.concat([{
+      executor: new MarkAsUnRead(this.session),
+      context: {},
+      name: 'unread',
     }]);
 
     return new TodoList(this.todoList, this.session, items);
