@@ -9,6 +9,10 @@ type Context = {
 
 class GetById implements UseCase<Context, ITodoList> {
   async execute({ id, todoList }: Context): Promise<ITodoList | UseCaseErrors> {
+    if (id.length === 0) {
+      return UseCaseErrors.EmptyValue;
+    }
+
     const nextTodoList = todoList.getById(id);
 
     if (nextTodoList.length === 0) {

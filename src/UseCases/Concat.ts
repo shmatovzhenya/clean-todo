@@ -9,6 +9,10 @@ type Context = {
 
 class Concat implements UseCase<Context, ITodoList> {
   async execute({ id, todoList }: Context): Promise<ITodoList | UseCaseErrors> {
+    if (id.length === 0) {
+      return UseCaseErrors.EmptyValue;
+    }
+
     const oldLength = todoList.length;
     const nextTodoList = todoList.addToSequence(id);
     const currentLength = nextTodoList.length;

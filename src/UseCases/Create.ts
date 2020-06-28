@@ -3,7 +3,7 @@ import { UseCase, Mapper, StorageErrors, UseCaseErrors } from './types';
 
 
 type Session = {
-  save: Mapper<Todo, void>;
+  save: Mapper<Todo, void | StorageErrors>;
 };
 
 type Context = {
@@ -24,7 +24,8 @@ class Create implements UseCase<Context, ITodoList> {
 
     const error = await this.session.save.map(lastTodo);
 
-    if (error) {
+    if (error || error === 0) {
+      todoList.getById(lastTodo.id).remove();
       return error;
     }
 
