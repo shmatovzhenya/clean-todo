@@ -3,6 +3,7 @@ import { UseCase, Mapper, StorageErrors, UseCaseErrors } from './types';
 import { Create, Context as CreateContext } from './Create';
 import { GetById, Context as GetByIdContext } from './GetById';
 import { Concat, Context as ConcatContext } from './Concat';
+import { MarkAsRead, Context as MarkAsReadContext } from './MarkAsRead';
 
 
 type Context = CreateContext | GetByIdContext | ConcatContext;
@@ -15,6 +16,7 @@ type Item = {
 
 type Session = {
   save: Mapper<Todo, void>;
+  update: Mapper<Todo[], void>;
 };
 
 type Error = {
@@ -55,6 +57,16 @@ class TodoList {
       executor: new Concat(),
       context: { id },
       name: 'concat',
+    }]);
+
+    return new TodoList(this.todoList, this.session, items);
+  }
+
+  complete(): TodoList {
+    const items = this.items.concat([{
+      executor: new MarkAsRead(this.session),
+      context: {},
+      name: 'complete',
     }]);
 
     return new TodoList(this.todoList, this.session, items);
