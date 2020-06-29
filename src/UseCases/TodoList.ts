@@ -1,4 +1,4 @@
-import { ITodoList, Todo } from '../domain';
+import { ITodoList, Todo, Status } from '../domain';
 import { UseCase, Mapper, StorageErrors, UseCaseErrors } from './types';
 import { Create, Context as CreateContext } from './Create';
 import { GetById, Context as GetByIdContext } from './GetById';
@@ -6,9 +6,10 @@ import { Concat, Context as ConcatContext } from './Concat';
 import { MarkAsRead } from './MarkAsRead';
 import { MarkAsUnRead } from './MarkAsUnRead';
 import { Remove } from './Remove';
+import { GetByStatus, Context as GetByStatusContext } from './GetByStatus';
 
 
-type Context = CreateContext | GetByIdContext | ConcatContext;
+type Context = CreateContext | GetByIdContext | ConcatContext | GetByStatusContext;
 
 type Item = {
   executor: UseCase<Context, ITodoList>;
@@ -90,6 +91,16 @@ class TodoList {
       executor: new Remove(this.session),
       context: {},
       name: 'remove',
+    }]);
+
+    return new TodoList(this.todoList, this.session, items);
+  }
+
+  getByStatus({ status }: Omit<GetByStatusContext, 'todoList'>): TodoList {
+    const items = this.items.concat([{
+      executor: new GetByStatus(),
+      context: { status },
+      name: 'bystatus',
     }]);
 
     return new TodoList(this.todoList, this.session, items);

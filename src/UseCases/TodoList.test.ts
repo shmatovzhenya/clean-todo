@@ -363,4 +363,30 @@ describe('Testing TodoList UseCase', () => {
       name: 'remove',
     });
   });
+
+  test('Get todos by status', async () => {
+    const todos = new TodoFactory().create();
+    const todoList = new TodoList(todos, session);
+
+    await todoList
+      .create({ message: 'qwerty' })
+      .create({ message: 'asdfgh' })
+      .create({ message: 'zxcvbn' })
+      .getById({ id: '1' })
+      .concat({ id: '3' })
+      .complete()
+      .values();
+
+    const completed = await todoList.getByStatus({ status: Status.Completed }).values();
+    const unCompleted = await todoList.getByStatus({ status: Status.New }).values();
+
+    expect(completed).toStrictEqual([
+      { id: '3', message: 'qwerty', status: Status.Completed }, 
+      { id: '1', message: 'zxcvbn', status: Status.Completed },
+    ]);
+
+    expect(unCompleted).toStrictEqual([
+      { id: '2', message: 'asdfgh', status: Status.New }, 
+    ]);
+  });
 });
