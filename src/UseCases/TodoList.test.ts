@@ -10,6 +10,9 @@ const session: Session = {
   update: {
     map: async () => {},
   },
+  remove: {
+    map: async () => {},
+  },
 };
 
 describe('Testing TodoList UseCase', () => {
@@ -53,6 +56,7 @@ describe('Testing TodoList UseCase', () => {
     const todos = new TodoFactory().create();
     const todoList = new TodoList(todos, {
       update: session.update,
+      remove: session.remove,
       save: {
         map: async () => {
           return StorageErrors.NotFound;
@@ -225,6 +229,7 @@ describe('Testing TodoList UseCase', () => {
     const todos = new TodoFactory().create();
     const todoList = new TodoList(todos, {
       save: session.save,
+      remove: session.remove,
       update: {
         map: async () => Promise.resolve(StorageErrors.NetworkFailed),
       },
@@ -273,18 +278,17 @@ describe('Testing TodoList UseCase', () => {
     ]);
   });
 
-
   test('Mark todo as read with network error', async () => {
     let isCalled = false;
     const todos = new TodoFactory().create();
     const todoList = new TodoList(todos, {
       save: session.save,
+      remove: session.remove,
       update: {
         map: async () => {
           if (!isCalled) {
             isCalled = true;
           } else {
-            console.log('FAILED');
             return StorageErrors.NetworkFailed;
           }
         },
@@ -315,6 +319,48 @@ describe('Testing TodoList UseCase', () => {
       code: StorageErrors.NetworkFailed,
       context: {},
       name: 'unread',
+    });
+  });
+
+  test('Removing todo', async () => {
+    const todos = new TodoFactory().create();
+    const todoList = new TodoList(todos, session);
+
+    await todoList
+      .create({ message: 'qwerty' })
+      .create({ message: 'asdfgh' })
+      .create({ message: 'zxcvbn' })
+      .getById({ id: '1' })
+      .concat({ id: '3' })
+      .remove()
+      .values();
+
+    expect(Array.from(todos)).toStrictEqual([{ id: '2', message: 'asdfgh', status: 0 }]);
+  });
+
+  test('Removing todo', async () => {
+    const todos = new TodoFactory().create();
+    const todoList = new TodoList(todos, {
+      save: session.save,
+      update: session.update,
+      remove: {
+        map: async () => StorageErrors.NetworkFailed,
+      },
+    });
+
+    const result = await todoList
+      .create({ message: 'qwerty' })
+      .create({ message: 'asdfgh' })
+      .create({ message: 'zxcvbn' })
+      .getById({ id: '1' })
+      .concat({ id: '3' })
+      .remove()
+      .values();
+
+    expect(result).toStrictEqual({
+      code: StorageErrors.NetworkFailed,
+      context: {},
+      name: 'remove',
     });
   });
 });

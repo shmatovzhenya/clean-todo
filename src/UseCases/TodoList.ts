@@ -5,6 +5,7 @@ import { GetById, Context as GetByIdContext } from './GetById';
 import { Concat, Context as ConcatContext } from './Concat';
 import { MarkAsRead } from './MarkAsRead';
 import { MarkAsUnRead } from './MarkAsUnRead';
+import { Remove } from './Remove';
 
 
 type Context = CreateContext | GetByIdContext | ConcatContext;
@@ -18,6 +19,7 @@ type Item = {
 type Session = {
   save: Mapper<Todo, void | StorageErrors>;
   update: Mapper<Todo[], void | StorageErrors>;
+  remove: Mapper<Todo[], void | StorageErrors>;
 };
 
 type Error = {
@@ -78,6 +80,16 @@ class TodoList {
       executor: new MarkAsUnRead(this.session),
       context: {},
       name: 'unread',
+    }]);
+
+    return new TodoList(this.todoList, this.session, items);
+  }
+
+  remove(): TodoList {
+    const items = this.items.concat([{
+      executor: new Remove(this.session),
+      context: {},
+      name: 'remove',
     }]);
 
     return new TodoList(this.todoList, this.session, items);

@@ -69,7 +69,7 @@ class TodoList implements ITodoList {
   }
 
   remove(): TodoList {
-    for (let index of this.settings.indexMap) {
+    for (let index of Array.from(this.settings.indexMap).reverse()) {
       this.todoList.remove(index);
       this.settings.indexMap.delete(index);
     }
