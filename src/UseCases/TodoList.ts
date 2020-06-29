@@ -16,8 +16,8 @@ type Item = {
 };
 
 type Session = {
-  save: Mapper<Todo, void>;
-  update: Mapper<Todo[], void>;
+  save: Mapper<Todo, void | StorageErrors>;
+  update: Mapper<Todo[], void | StorageErrors>;
 };
 
 type Error = {
@@ -107,4 +107,5 @@ class TodoList {
 
 export {
   TodoList,
+  Session,
 };

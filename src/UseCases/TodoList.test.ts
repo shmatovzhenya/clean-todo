@@ -1,9 +1,9 @@
 import { TodoFactory, Status } from '../domain';
-import { TodoList } from './TodoList';
+import { TodoList, Session } from './TodoList';
 import { UseCaseErrors, StorageErrors } from './types';
 
 
-const session = {
+const session: Session = {
   save: {
     map: async () => {},
   },
@@ -239,6 +239,12 @@ describe('Testing TodoList UseCase', () => {
       .complete()
       .values();
     
+    expect(Array.from(todos)).toStrictEqual([
+      { id: '3', message: 'qwerty', status: 0 }, 
+      { id: '2', message: 'asdfgh', status: 0 }, 
+      { id: '1', message: 'zxcvbn', status: 0 },
+    ]);
+
     expect(result).toStrictEqual({
       code: StorageErrors.NetworkFailed,
       context: {},
@@ -269,23 +275,42 @@ describe('Testing TodoList UseCase', () => {
 
 
   test('Mark todo as read with network error', async () => {
+    let isCalled = false;
     const todos = new TodoFactory().create();
     const todoList = new TodoList(todos, {
       save: session.save,
       update: {
-        map: async () => Promise.resolve(StorageErrors.NetworkFailed),
+        map: async () => {
+          if (!isCalled) {
+            isCalled = true;
+          } else {
+            console.log('FAILED');
+            return StorageErrors.NetworkFailed;
+          }
+        },
       },
     });
 
-    const result = await todoList
+    await todoList
       .create({ message: 'qwerty' })
       .create({ message: 'asdfgh' })
       .create({ message: 'zxcvbn' })
+      .complete()
+      .values();
+
+    const result = await todoList
       .getById({ id: '1' })
       .concat({ id: '2' })
       .markAsNew()
       .values();
     
+    
+    expect(Array.from(todos)).toStrictEqual([
+      { id: '3', message: 'qwerty', status: 1 }, 
+      { id: '2', message: 'asdfgh', status: 1 }, 
+      { id: '1', message: 'zxcvbn', status: 1 },
+    ]);
+
     expect(result).toStrictEqual({
       code: StorageErrors.NetworkFailed,
       context: {},
