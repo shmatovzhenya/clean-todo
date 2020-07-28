@@ -1,4 +1,4 @@
-import { TodoFactory, ITodoList, Todo } from '../domain';
+import { TodoFactory, ITodoList, Todo, Status } from '../domain';
 import { TodoList, Session as InnerSession } from './TodoList';
 import { Mapper, StorageErrors, UseCaseErrors } from './types';
 
@@ -37,4 +37,5 @@ export {
   Mapper,
   Todo,
   Session,
+  Status,
 };
